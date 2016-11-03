@@ -37,7 +37,7 @@ public class Main {
 			System.out.println("Opened database successfully");
 
 			stmt = c.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM opus_user;");
+			ResultSet rs = stmt.executeQuery("SELECT * FROM opus_children;");
 			while (rs.next()) {
 				int id = rs.getInt("id");
 				String name = rs.getString("name");
