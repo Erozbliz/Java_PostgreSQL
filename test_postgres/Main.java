@@ -7,6 +7,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class Main {
 
@@ -95,6 +99,9 @@ public class Main {
 
 		//liste 
 		ArrayList<Integer> listNodeDeRoot = new ArrayList<Integer>();
+		//param1 = enfant , parent2 = parent
+		Map<Integer, Integer> mapEnfantParent = new HashMap<Integer, Integer>();
+		HashMap<Integer, Object> mapEnfantParent2 = new HashMap<Integer, Object>();
 		ArrayList<Integer> listParent = new ArrayList<Integer>();
 		ArrayList<Integer> listEnfant = new ArrayList<Integer>();
 
@@ -115,6 +122,8 @@ public class Main {
 				} else {
 					listParent.add(id_parent);
 					listEnfant.add(id_enfant);
+					mapEnfantParent.put(id_enfant, id_parent);
+					mapEnfantParent2.put(id_enfant, id_parent);
 				}
 
 				/*System.out.print(" niveau_un = " + niveau_un);
@@ -153,7 +162,7 @@ public class Main {
 		}
 
 		//--------Test (pas bon)
-		for (int i = 0; i < listNodeDeRoot.size(); i++) {
+		/*for (int i = 0; i < listNodeDeRoot.size(); i++) {
 			int idMasterNode = listNodeDeRoot.get(i);
 			System.out.println("-" + idMasterNode);
 			for (int j = 0; j < listParent.size(); j++) {
@@ -161,9 +170,59 @@ public class Main {
 					System.out.println("--- " + listParent.get(j) + " - " + listEnfant.get(j));
 				}
 			}
+		}*/
+
+		//---------TEST 1
+		/*Set<Integer> keys = mapEnfantParent.keySet(); //key=enfant ,parent
+		for (int i = 0; i < listNodeDeRoot.size(); i++) {
+			System.out.println("-" + listNodeDeRoot.get(i));
+			for (Integer key : keys) {
+				if (listNodeDeRoot.get(i) == mapEnfantParent.get(key)) {
+					System.out.println("---" + mapEnfantParent.get(key) + "<->" + key);
+				}
+			}
+		}*/
+
+		//---------TEST 2
+		for (int i = 0; i < listNodeDeRoot.size(); i++) {
+			System.out.println("-" + listNodeDeRoot.get(i));
+			recursiveFindLeaf(listNodeDeRoot.get(i), mapEnfantParent);
 		}
+		System.out.println("\n");
+		iterateHashMap(mapEnfantParent2);
 
 		System.out.println("Operation done successfully");
+	}
+
+	//---------TEST 2
+	public static void recursiveFindLeaf(int numNodeFromRoot, Map<Integer, Integer> mapEnfantParent) {
+		Set<Integer> keys = mapEnfantParent.keySet(); //key=enfant ,parent
+		for (Integer key : keys) {
+			if (numNodeFromRoot == mapEnfantParent.get(key)) {
+				System.out.println("---" + mapEnfantParent.get(key) + "<->" + key);
+				//mapEnfantParent.remove(key);
+				//recursiveFindLeaf(numNodeFromRoot,mapEnfantParent);
+			} else {
+				//mapEnfantParent.remove(key);
+				//recursiveFindLeaf(numNodeFromRoot,mapEnfantParent);
+				//return;
+			}
+		}
+	}
+
+	// http://www.prodigyproductionsllc.com/articles/programming/recursively-iterate-hashmap-with-java/
+	// http://stackoverflow.com/questions/9337536/iterate-recursively-through-deep-hashmap
+	//-------TEST 3 récursive 
+	private static void iterateHashMap(HashMap<Integer, Object> map) {
+		Iterator it = map.keySet().iterator();
+		System.out.println("-");
+		while (it.hasNext()) {
+			Integer key = (Integer) it.next();
+			System.out.println("---" + map.get(key) + "<->" + key);
+			if (map.get(key) instanceof HashMap){
+				iterateHashMap((HashMap) map.get(key));
+			}
+		}
 	}
 
 }
