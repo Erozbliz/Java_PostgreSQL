@@ -18,7 +18,8 @@ public class Main {
 		try {
 			//SelectNode(c);
 			//SelectComposition(c);
-			SelectAll(c, 1);
+			//SelectAll(c, 1);
+			recursiveSql(c);
 			c.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -174,31 +175,71 @@ public class Main {
 		Set<Integer> keys = mapEnfantParent.keySet(); //key=enfant ,parent
 		for (Integer key : keys) {
 			System.out.println("---" + mapEnfantParent.get(key) + "<->" + key);
-			//mapEnfantParent.remove(key);
-			//recursiveFindLeaf(numNodeFromRoot,mapEnfantParent);
-
-			//mapEnfantParent.remove(key);
-			//recursiveFindLeaf(numNodeFromRoot,mapEnfantParent);
-			//return;
 
 		}
-		
+
 		// { 1 :[{1,2,3}],2...
-		int gardeMyVar =1;
+		int gardeMyVar = 1;
 		System.out.print("{");
 		for (Integer key : keys) {
-			
-			if(mapEnfantParent.get(key)==gardeMyVar){
-				System.out.print("{" + key+"}");
-			}else{
+
+			if (mapEnfantParent.get(key) == gardeMyVar) {
+				System.out.print("{" + key + "}");
+			} else {
 				System.out.print(mapEnfantParent.get(key));
-				gardeMyVar=mapEnfantParent.get(key);
+				gardeMyVar = mapEnfantParent.get(key);
 			}
 			//System.out.print(",{");
-			
+
 		}
 		System.out.print("}");
 	}
+
+	public static void recursiveSql(Connection c) {
+		Statement stmt = null;
+		try {
+			String sqlre = "WITH RECURSIVE q AS (SELECT id_node_1, id_node FROM composition WHERE id_node_1 = 4 UNION SELECT m.id_node_1, m.id_node FROM composition m JOIN q ON q.id_node_1 = m.id_node) SELECT id_node_1, id_node FROM q;";
+
+			stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery(sqlre);
+			boolean lock = true;
+			int oldIdNode = 1;
+			//rs.next();
+			//Integer TestType = rs.getInt(1);
+			//System.out.println(TestType);
+			while (rs.next()) {
+				//Version de base
+				int id_parent = rs.getInt("id_node");
+				int id_enfant = rs.getInt("id_node_1");
+				System.out.print(id_parent);
+				System.out.print(" <-> " + id_enfant);
+				System.out.println();
+				//---------------
+
+				/*if (lock == true) {
+					oldIdNode = id_parent;
+					lock = false;
+					System.out.println("lock");
+				}
+
+				System.out.println(oldIdNode + "^^" + rs.getInt("id_node"));
+				if (oldIdNode == rs.getInt("id_node")) {
+					oldIdNode = rs.getInt("id_node");
+					System.out.println("-------->" + oldIdNode);
+				}*/
+
+			}
+			rs.close();
+			stmt.close();
+		} catch (Exception e) {
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		System.out.println("SelectNode done successfully");
+
+	}
+
+
 
 	// http://www.prodigyproductionsllc.com/articles/programming/recursively-iterate-hashmap-with-java/
 	// http://stackoverflow.com/questions/9337536/iterate-recursively-through-deep-hashmap

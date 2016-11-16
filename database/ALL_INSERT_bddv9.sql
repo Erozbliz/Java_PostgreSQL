@@ -77,3 +77,46 @@ WITH RECURSIVE q AS (SELECT place, is_in
                                  FROM places m
                                  JOIN q ON q.place = m.is_in)
                   SELECT place, is_in FROM q;
+
+
+
+
+INSERT INTO public.node(id_node, name, tag, size) VALUES (10, 'v1', 'security 771', 50);
+INSERT INTO public.node(id_node, name, tag, size) VALUES (20, 'v2', 'security 771', 50);
+INSERT INTO public.node(id_node, name, tag, size) VALUES (30, 'v3', 'security 771', 50);
+INSERT INTO public.node(id_node, name, tag, size) VALUES (100, 'part 1', 'security 771', 50);
+
+INSERT INTO public.composition(id_node, id_node_1) VALUES (4, 10);
+INSERT INTO public.composition(id_node, id_node_1) VALUES (4, 20);
+INSERT INTO public.composition(id_node, id_node_1) VALUES (4, 30);
+INSERT INTO public.composition(id_node, id_node_1) VALUES (20, 100);
+
+
+
+WITH RECURSIVE q AS (SELECT id_node_1, id_node
+                                 FROM composition
+                                WHERE id_node_1 = 4
+                                UNION
+                               SELECT m.id_node_1, m.id_node
+                                 FROM composition m
+                                 JOIN q ON q.id_node_1 = m.id_node)
+                  SELECT id_node_1, id_node FROM q;
+
+
+
+--Recursive query (introduced in 8.4 returns fully qualified name)
+WITH RECURSIVE composition AS
+(SELECT id_node_1, id_node, CAST(id_node As varchar(1000)) As id_node_fullname
+FROM composition
+WHERE id_node_1 = 4
+UNION ALL
+SELECT si.id_node_1,si.id_node,
+	CAST(sp.id_node_fullname || '->' || si.id_node As varchar(1000)) As si_item_fullname
+FROM composition As si
+	INNER JOIN composition AS sp
+	ON (si.id_node = sp.id_node_1)
+)
+SELECT id_node_1, si_item_fullname
+FROM composition
+ORDER BY id_node_1;
+
