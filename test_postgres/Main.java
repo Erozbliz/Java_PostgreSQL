@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,8 +19,8 @@ public class Main {
 		try {
 			//SelectNode(c);
 			//SelectComposition(c);
-			//SelectAll(c, 1);
-			recursiveSql(c);
+			SelectAll(c, 1);
+			//recursiveSql(c);
 			c.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -91,7 +92,7 @@ public class Main {
 
 		//param1 = enfant , parent2 = parent
 		Map<Integer, Integer> mapEnfantParent = new HashMap<Integer, Integer>();
-		HashMap<Integer, Object> mapEnfantParent2 = new HashMap<Integer, Object>();
+		HashMap<String, Object> mapEnfantParent2 = new HashMap<String, Object>();
 		ArrayList<Integer> listParent = new ArrayList<Integer>();
 		ArrayList<Integer> listEnfant = new ArrayList<Integer>();
 
@@ -112,7 +113,7 @@ public class Main {
 				listParent.add(id_parent);
 				listEnfant.add(id_enfant);
 				mapEnfantParent.put(id_enfant, id_parent);
-				mapEnfantParent2.put(id_enfant, id_parent);
+				mapEnfantParent2.put(Integer.toString(id_enfant), id_parent);
 
 				/*System.out.print(" niveau_un = " + niveau_un);
 				System.out.print(" root = " + root);
@@ -167,11 +168,13 @@ public class Main {
 		}*/
 
 		recursiveFindLeaf(mapEnfantParent);
+		recursiveFindLeafFinal(mapEnfantParent2);
 		System.out.println("Operation done successfully");
 	}
 
 	//---------TEST 2
 	public static void recursiveFindLeaf(Map<Integer, Integer> mapEnfantParent) {
+		System.out.println("-------------recursiveFindLeaf-------------------");
 		Set<Integer> keys = mapEnfantParent.keySet(); //key=enfant ,parent
 		for (Integer key : keys) {
 			System.out.println("---" + mapEnfantParent.get(key) + "<->" + key);
@@ -193,6 +196,22 @@ public class Main {
 
 		}
 		System.out.print("}");
+		// ------------
+		
+	}
+	
+	public static List<Object> recursiveFindLeafFinal(Map<String, Object> mapEnfantParent) {
+		 	List<Object> retVal = new ArrayList<Object>();
+		    for (Map.Entry<String, Object> entry : mapEnfantParent.entrySet()) {
+		        Object value = entry.getValue();
+		        if (value instanceof Map) {
+		            retVal.addAll(recursiveFindLeafFinal((Map) value));
+		        } else {
+		            retVal.add(value);
+		        }
+		    }
+
+		    return retVal;
 	}
 
 	public static void recursiveSql(Connection c) {
