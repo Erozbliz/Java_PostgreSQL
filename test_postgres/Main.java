@@ -168,8 +168,15 @@ public class Main {
 		}*/
 
 		recursiveFindLeaf(mapEnfantParent);
-		recursiveFindLeafFinal(mapEnfantParent2);
-		System.out.println("Operation done successfully");
+		System.out.println("\n---------------");
+		/*List<Object> test = recursiveFindLeafFinal(mapEnfantParent2);
+		for(Object room : test) {
+			  System.out.println(room);
+		}*/
+		//System.out.print("{'name':'"+1+"','children':[");
+		FinalRecursivee(1,mapEnfantParent);
+		String replacedString = finalJson.replace("}{", "},{");
+		System.out.println("\n"+replacedString);
 	}
 
 	//---------TEST 2
@@ -210,8 +217,35 @@ public class Main {
 		            retVal.add(value);
 		        }
 		    }
-
 		    return retVal;
+	}
+	
+	static String finalJson ="{\"name\":\""+1+"\",\"children\":[";
+	public static void FinalRecursivee(int parent ,Map<Integer, Integer> mapEnfantParent){
+		
+		//System.out.print("{'name':'"+parent+"','children':[");
+		//System.out.print("{'name':'"+parent);
+		Set<Integer> keys = mapEnfantParent.keySet(); //key=enfant ,parent
+		
+		for (Integer key : keys) {
+			//System.out.print("{'name':"+key+",'size':3000},");
+			//si parent == parent choisie (qui peut etre un enfant)
+			if( mapEnfantParent.get(key) == parent){
+				//System.out.println(",{"+ key);
+				//System.out.print("{'name':'"+key+",'size':3000},");
+				//System.out.print("{'name':'"+key+"','children':[");
+				finalJson += "{\"name\":\""+key+"\",\"children\":[";
+				//int secondKey = key;
+				//mapEnfantParent.
+				FinalRecursivee(key,mapEnfantParent);
+			}else{
+				
+			}
+		}
+		
+		
+		finalJson = finalJson +"]}";
+		//System.out.print("]},");
 	}
 
 	public static void recursiveSql(Connection c) {
