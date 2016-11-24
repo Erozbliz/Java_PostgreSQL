@@ -27,5 +27,4 @@ public class Node {
 	 public Node getParent() {
 	  return parent;
 	 }
-	 
-	}
+}

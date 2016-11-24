@@ -210,7 +210,7 @@ public class Main {
 	public static List<Object> recursiveFindLeafFinal(Map<String, Object> mapEnfantParent) {
 		 	List<Object> retVal = new ArrayList<Object>();
 		    for (Map.Entry<String, Object> entry : mapEnfantParent.entrySet()) {
-		        Object value = entry.getValue();
+		        Object value = entry.getValue();	
 		        if (value instanceof Map) {
 		            retVal.addAll(recursiveFindLeafFinal((Map) value));
 		        } else {
