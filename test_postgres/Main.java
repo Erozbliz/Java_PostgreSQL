@@ -1,5 +1,8 @@
 package test_postgres;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -12,6 +15,10 @@ import java.util.Map;
 import java.util.Set;
 
 public class Main {
+	
+	
+	static String finalJson =""; // Json final
+
 
 	public static void main(String[] args) {
 		System.out.println("Main test Postgress");
@@ -145,10 +152,39 @@ public class Main {
 		//recursiveFindLeaf(mapEnfantParent);
 		System.out.println("\n---------------");
 		//System.out.print("{'name':'"+1+"','children':[");
-		FinalRecursivee(1,mapEnfantParent);
+		/*FinalRecursivee(1,mapEnfantParent);
 		String replacedString = finalJson.replace("}{", "},{");// a déplacer dans une nouvelle méthode <<<<<<
-		System.out.println("\n"+replacedString);// a déplacer dans une nouvelle méthode <<<<<<
+		System.out.println("\n"+replacedString);// a déplacer dans une nouvelle méthode <<<<<<*/
+		
+		createJSON(0,mapEnfantParent);
+		
 		//utilser http://www.jsoneditoronline.org/ 
+		
+		
+	}
+	
+	
+	public static void createJSON(int parent ,Map<Integer, Integer> mapEnfantParent){
+		finalJson ="{\"name\":\""+parent+"\",\"children\":["; 
+		FinalRecursivee(parent,mapEnfantParent);
+		String replacedString = finalJson.replace("}{", "},{");
+		System.out.println("\n"+replacedString);
+		
+		//Création du JSON en sortie
+		try{
+			final File parentDir = new File("web_service");
+			parentDir.mkdir();
+			final String hash = "data";
+			final String fileName = hash + ".json";
+			final File file = new File(parentDir, fileName);
+			file.createNewFile(); // web_service/data.json*/
+			
+			 PrintWriter writer = new PrintWriter(file, "UTF-8");
+			 writer.println(replacedString);
+			 writer.close();
+		} catch (IOException e) {
+			System.out.println("Erreur crétion du JSON");
+		}
 	}
 
 
@@ -158,7 +194,7 @@ public class Main {
 	/**
 	 * Méthode récursive qui construit un json en fonction parent rentré
 	 */
-	static String finalJson ="{\"name\":\""+1+"\",\"children\":["; // a déplacer dans une nouvelle méthode <<<<<<
+	//static String finalJson ="{\"name\":\""+1+"\",\"children\":["; // a déplacer dans une nouvelle méthode <<<<<<
 	public static void FinalRecursivee(int parent ,Map<Integer, Integer> mapEnfantParent){
 		
 		//System.out.print("{'name':'"+parent+"','children':[");
