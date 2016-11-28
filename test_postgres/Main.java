@@ -15,10 +15,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class Main {
-	
-	
-	static String finalJson =""; // Json final
 
+	static String finalJson = ""; // Json final
 
 	public static void main(String[] args) {
 		System.out.println("Main test Postgress");
@@ -98,6 +96,9 @@ public class Main {
 
 		//param1 = enfant , parent2 = parent
 		Map<Integer, Integer> mapEnfantParent = new HashMap<Integer, Integer>();
+		//param1 = id_node , parent2 = name
+		Map<Integer, String> mapIdNodeName = new HashMap<Integer, String>();
+
 		HashMap<String, Object> mapEnfantParent2 = new HashMap<String, Object>();
 		ArrayList<Integer> listParent = new ArrayList<Integer>();
 		ArrayList<Integer> listEnfant = new ArrayList<Integer>();
@@ -143,11 +144,18 @@ public class Main {
 				System.out.print(" tag = " + tag);
 				System.out.print(" size = " + size);
 				System.out.println();
+
+				mapIdNodeName.put(id_node, name);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
+		Set<Integer> keys = mapIdNodeName.keySet(); //key = id_node, name
+		for (Integer key : keys) {
+			System.out.println(" " + key + "<->" + mapIdNodeName.get(key));
+
+		}
 
 		//recursiveFindLeaf(mapEnfantParent);
 		System.out.println("\n---------------");
@@ -155,78 +163,78 @@ public class Main {
 		/*FinalRecursivee(1,mapEnfantParent);
 		String replacedString = finalJson.replace("}{", "},{");// a déplacer dans une nouvelle méthode <<<<<<
 		System.out.println("\n"+replacedString);// a déplacer dans une nouvelle méthode <<<<<<*/
-		
-		createJSON(0,mapEnfantParent);
-		
+
+		createJSON(0, mapEnfantParent, mapIdNodeName);
+
 		//utilser http://www.jsoneditoronline.org/ 
-		
-		
+
 	}
-	
-	
-	public static void createJSON(int parent ,Map<Integer, Integer> mapEnfantParent){
-		finalJson ="{\"name\":\""+parent+"\",\"children\":["; 
-		FinalRecursivee(parent,mapEnfantParent);
-		String replacedString = finalJson.replace("}{", "},{");
-		System.out.println("\n"+replacedString);
+
+	/**
+	 * Création du JSON
+	 * 
+	 */
+	public static void createJSON(int parent, Map<Integer, Integer> mapEnfantParent, Map<Integer, String> mapIdNodeName) {
 		
+		Set<Integer> keys = mapIdNodeName.keySet(); //key = id_node, name
+		
+		finalJson = "{\"name\":\"" + mapIdNodeName.get(parent) + "\",\"children\":[";
+		FinalRecursivee(parent, mapEnfantParent);
+		String replacedString = finalJson.replace("}{", "},{");
+		System.out.println("\n" + replacedString);
+
 		//Création du JSON en sortie
-		try{
+		try {
 			final File parentDir = new File("web_service");
 			parentDir.mkdir();
 			final String hash = "data";
 			final String fileName = hash + ".json";
 			final File file = new File(parentDir, fileName);
 			file.createNewFile(); // web_service/data.json*/
-			
-			 PrintWriter writer = new PrintWriter(file, "UTF-8");
-			 writer.println(replacedString);
-			 writer.close();
+
+			PrintWriter writer = new PrintWriter(file, "UTF-8");
+			writer.println(replacedString);
+			writer.close();
 		} catch (IOException e) {
 			System.out.println("Erreur crétion du JSON");
 		}
 	}
 
-
-	
-
-	
 	/**
 	 * Méthode récursive qui construit un json en fonction parent rentré
 	 */
 	//static String finalJson ="{\"name\":\""+1+"\",\"children\":["; // a déplacer dans une nouvelle méthode <<<<<<
-	public static void FinalRecursivee(int parent ,Map<Integer, Integer> mapEnfantParent){
-		
+	public static void FinalRecursivee(int parent, Map<Integer, Integer> mapEnfantParent) {
+
 		//System.out.print("{'name':'"+parent+"','children':[");
 		//System.out.print("{'name':'"+parent);
 		Set<Integer> keys = mapEnfantParent.keySet(); //key=enfant ,parent
-		
+
 		for (Integer key : keys) {
 			//System.out.print("{'name':"+key+",'size':3000},");
 			//si parent == parent choisie (qui peut etre un enfant)
-			if( mapEnfantParent.get(key) == parent){
+			if (mapEnfantParent.get(key) == parent) {
 				//System.out.println(",{"+ key);
 				//System.out.print("{'name':'"+key+",'size':3000},");
 				//System.out.print("{'name':'"+key+"','children':[");
-				finalJson += "{\"name\":\""+key+"\",\"children\":[";
+				finalJson += "{\"name\":\"" + key + "\",\"children\":[";
 				//int secondKey = key;
 				//mapEnfantParent.
-				FinalRecursivee(key,mapEnfantParent);
-			}else{
-				
+				FinalRecursivee(key, mapEnfantParent);
+			} else {
+
 			}
 		}
 
-		finalJson = finalJson +"]}";
+		finalJson = finalJson + "]}";
 		//System.out.print("]},");
 	}
-
 
 	/* ********************************
 	 * 			POUR LES TESTS
 	 * ********************************
 	 */
-	
+
 	//TEST PAS BON
 	public static void recursiveFindLeaf(Map<Integer, Integer> mapEnfantParent) {
 		System.out.println("-------------recursiveFindLeaf-------------------");
@@ -251,18 +259,18 @@ public class Main {
 		}
 		System.out.print("}");
 	}
-	
+
 	//TEST PAS BON
 	public static List<Object> recursiveFindLeafFinal(Map<String, Object> mapEnfantParent) {
-	 	List<Object> retVal = new ArrayList<Object>();
-	    for (Map.Entry<String, Object> entry : mapEnfantParent.entrySet()) {
-	        Object value = entry.getValue();	
-	        if (value instanceof Map) {
-	            retVal.addAll(recursiveFindLeafFinal((Map) value));
-	        } else {
-	            retVal.add(value);
-	        }
-	    }
-	    return retVal;
-}
+		List<Object> retVal = new ArrayList<Object>();
+		for (Map.Entry<String, Object> entry : mapEnfantParent.entrySet()) {
+			Object value = entry.getValue();
+			if (value instanceof Map) {
+				retVal.addAll(recursiveFindLeafFinal((Map) value));
+			} else {
+				retVal.add(value);
+			}
+		}
+		return retVal;
+	}
 }
