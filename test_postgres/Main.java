@@ -151,11 +151,11 @@ public class Main {
 			e.printStackTrace();
 		}
 
-		Set<Integer> keys = mapIdNodeName.keySet(); //key = id_node, name
+		/*Set<Integer> keys = mapIdNodeName.keySet(); //key = id_node, name
 		for (Integer key : keys) {
 			System.out.println(" " + key + "<->" + mapIdNodeName.get(key));
 
-		}
+		}*/
 
 		//recursiveFindLeaf(mapEnfantParent);
 		System.out.println("\n---------------");
@@ -179,7 +179,7 @@ public class Main {
 		Set<Integer> keys = mapIdNodeName.keySet(); //key = id_node, name
 		
 		finalJson = "{\"name\":\"" + mapIdNodeName.get(parent) + "\",\"children\":[";
-		FinalRecursivee(parent, mapEnfantParent);
+		FinalRecursivee(parent, mapEnfantParent, mapIdNodeName);
 		String replacedString = finalJson.replace("}{", "},{");
 		System.out.println("\n" + replacedString);
 
@@ -204,11 +204,12 @@ public class Main {
 	 * Méthode récursive qui construit un json en fonction parent rentré
 	 */
 	//static String finalJson ="{\"name\":\""+1+"\",\"children\":["; // a déplacer dans une nouvelle méthode <<<<<<
-	public static void FinalRecursivee(int parent, Map<Integer, Integer> mapEnfantParent) {
+	public static void FinalRecursivee(int parent, Map<Integer, Integer> mapEnfantParent, Map<Integer, String> mapIdNodeName) {
 
 		//System.out.print("{'name':'"+parent+"','children':[");
 		//System.out.print("{'name':'"+parent);
 		Set<Integer> keys = mapEnfantParent.keySet(); //key=enfant ,parent
+		Set<Integer> keysNode = mapIdNodeName.keySet(); //key = id_node, name
 
 		for (Integer key : keys) {
 			//System.out.print("{'name':"+key+",'size':3000},");
@@ -217,10 +218,10 @@ public class Main {
 				//System.out.println(",{"+ key);
 				//System.out.print("{'name':'"+key+",'size':3000},");
 				//System.out.print("{'name':'"+key+"','children':[");
-				finalJson += "{\"name\":\"" + key + "\",\"children\":[";
+				finalJson += "{\"name\":\"" + mapIdNodeName.get(key) + "\",\"children\":[";
 				//int secondKey = key;
 				//mapEnfantParent.
-				FinalRecursivee(key, mapEnfantParent);
+				FinalRecursivee(key, mapEnfantParent,mapIdNodeName);
 			} else {
 
 			}
