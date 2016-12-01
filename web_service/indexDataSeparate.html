@@ -44,6 +44,8 @@
 
           <div id="chart">
           </div>
+          <div class="chart2">
+          </div>
         </div>
       </div>
   </div>
@@ -54,7 +56,9 @@
 
   var finalJson = {"name":"UdeS","children":[{"name":"GEI771","children":[{"name":"APP1 771","children":[{"name":"APP1 773","children":[]},{"name":"v1","children":[{"name":"e1","children":[]}]},{"name":"v2","children":[]}]},{"name":"APP2 771","children":[]},{"name":"APP3 771","children":[]}]},{"name":"GEI772","children":[{"name":"APP1 772","children":[]},{"name":"APP2 772","children":[]},{"name":"APP3 772","children":[]}]},{"name":"GEI773","children":[{"name":"APP2 773","children":[]},{"name":"APP3 773","children":[]}]}]};
 
-
+  var idparent = 0;
+  // loadAjaxRefresh();
+  console.log(finalJson);
 
    var width = 960,
       height = 700,
@@ -181,9 +185,15 @@
 //Bouton pour rafrachir (maj)
 $("#btSave").click(function(){
 
-  var idparent = $("#inputParent").val();
+  idparent = $("#inputParent").val();
+
+  var parentSave= localStorage.getItem('testParent');
+  var ancienParent = idparent;
+  if(parentSave!=null){
+    ancienParent = parentSave;
+  }
   //alert(idparent);
-  var myUrl = "http://127.0.0.1:9999/getSunburst?parent="+ idparent;
+  var myUrl = "http://127.0.0.1:9999/getSunburst?parent="+ ancienParent;
   //alert(myUrl);
    //A garder
    $.ajax({
@@ -195,7 +205,12 @@ $("#btSave").click(function(){
             $("#callbackId").html(data);
 
             finalJson=data;
-           
+            localStorage.setItem('testParent', idparent);
+
+            alert(localStorage.getItem('testParent'));
+            //REFRESH ICI
+
+        
         },
         error: function(json) {
            // alert('erreur btRefresh');
@@ -204,6 +219,41 @@ $("#btSave").click(function(){
     });
 });
 
+
+/*
+function loadAjaxRefresh(){
+
+
+  var parentSave= localStorage.getItem('testParent');
+  var ancienParent = 0;
+  if(parentSave!=null){
+    ancienParent = parentSave;
+  }
+  //alert(idparent);
+  var myUrl = "http://127.0.0.1:9999/getSunburst?parent="+ ancienParent;
+   $.ajax({
+        url: myUrl,
+        dataType: "text",
+        //url: 'data_test/getListMatch.json',
+        type: 'GET',
+        success: function(data,callback) {
+            $("#callbackId").html(data);
+
+            finalJson=data;
+            //REFRESH ICI
+            console.log("chargement ok");
+            console.log(finalJson);
+            loaddd();
+
+        
+        },
+        error: function(json) {
+           // alert('erreur btRefresh');
+            $("#callbackId").html(" erreur réseaux");
+        }
+    });
+}
+*/
 
 
 </script>
