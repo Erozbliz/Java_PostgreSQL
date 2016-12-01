@@ -57,9 +57,10 @@
   var finalJson = {"name":"UdeS","children":[{"name":"GEI771","children":[{"name":"APP1 771","children":[{"name":"APP1 773","children":[]},{"name":"v1","children":[{"name":"e1","children":[]}]},{"name":"v2","children":[]}]},{"name":"APP2 771","children":[]},{"name":"APP3 771","children":[]}]},{"name":"GEI772","children":[{"name":"APP1 772","children":[]},{"name":"APP2 772","children":[]},{"name":"APP3 772","children":[]}]},{"name":"GEI773","children":[{"name":"APP2 773","children":[]},{"name":"APP3 773","children":[]}]}]};
 
   var idparent = 0;
-  // loadAjaxRefresh();
+   loadAjaxRefresh();
   console.log(finalJson);
 
+function loaddd(){
    var width = 960,
       height = 700,
       radius = Math.min(width, height) / 2;
@@ -171,7 +172,7 @@
   }
   
 
- 
+ }
   
   
 
@@ -209,6 +210,8 @@ $("#btSave").click(function(){
 
             alert(localStorage.getItem('testParent'));
             //REFRESH ICI
+            console.log(JSON.parse(finalJson));
+            window.location.reload(); //<<<<<<<<<<<<<<<<<<RELOAD
 
         
         },
@@ -220,7 +223,7 @@ $("#btSave").click(function(){
 });
 
 
-/*
+
 function loadAjaxRefresh(){
 
 
@@ -239,7 +242,7 @@ function loadAjaxRefresh(){
         success: function(data,callback) {
             $("#callbackId").html(data);
 
-            finalJson=data;
+            finalJson=JSON.parse(data);
             //REFRESH ICI
             console.log("chargement ok");
             console.log(finalJson);
@@ -253,7 +256,7 @@ function loadAjaxRefresh(){
         }
     });
 }
-*/
+
 
 
 </script>
