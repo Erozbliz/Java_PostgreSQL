@@ -15,6 +15,7 @@ import java.util.Set;
 
 /**
  *  Méthode pour faire des requetes SQL au serveur PostgreSQL
+ *  Utilisation de postgresql-9.4.1211.jre6.jar
  *
  */
 public class SqlRequest {
