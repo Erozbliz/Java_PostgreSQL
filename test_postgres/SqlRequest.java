@@ -163,7 +163,7 @@ public class SqlRequest {
 		}
 
 		System.out.println("\n---------------");
-		String myJson = createJSON(0, mapEnfantParent, mapIdNodeName);
+		String myJson = createJSON(numRoot, mapEnfantParent, mapIdNodeName);
 
 		//utilser http://www.jsoneditoronline.org/ 
 
