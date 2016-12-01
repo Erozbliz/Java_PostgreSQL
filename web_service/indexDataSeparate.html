@@ -36,7 +36,7 @@
               <label class="sr-only" for="inputParent">Parent Sunburst</label>
               <input type="text" class="form-control" id="inputParent" placeholder="parent">
             </div>
-            <button type="button" id="btSave" class="btn btn-default">Sauvegarder</button>
+            <button type="button" id="btSave" class="btn btn-default">Récupérer JSON</button>
           </form>
           <span> 
             <div id="callbackId" class="alert alert-success" role="alert">...</div>
@@ -51,7 +51,12 @@
 
  <script src="http://d3js.org/d3.v3.min.js"></script>
  <script>
- var width = 960,
+
+  var finalJson = {"name":"UdeS","children":[{"name":"GEI771","children":[{"name":"APP1 771","children":[{"name":"APP1 773","children":[]},{"name":"v1","children":[{"name":"e1","children":[]}]},{"name":"v2","children":[]}]},{"name":"APP2 771","children":[]},{"name":"APP3 771","children":[]}]},{"name":"GEI772","children":[{"name":"APP1 772","children":[]},{"name":"APP2 772","children":[]},{"name":"APP3 772","children":[]}]},{"name":"GEI773","children":[{"name":"APP2 773","children":[]},{"name":"APP3 773","children":[]}]}]};
+
+
+
+   var width = 960,
       height = 700,
       radius = Math.min(width, height) / 2;
 
@@ -66,6 +71,7 @@
   var svg = d3.select("#chart").append("svg")
       .attr("width", width)
       .attr("height", height)
+      .datum(finalJson)
       .append("g")
       .attr("transform", "translate(" + width / 2 + "," + (height / 2 + 10) + ")");
 
@@ -90,7 +96,7 @@
 
 
   var g = svg.selectAll("g")
-      .data(partition.nodes(getData()))
+      .data(partition.nodes)
       .enter().append("g");
 
   var path = g.append("path")
@@ -160,12 +166,12 @@
     return (x(d.x + d.dx / 2) - Math.PI / 2) / Math.PI * 180;
   }
   
-  var finalJson = {"name":"UdeS","children":[{"name":"GEI771","children":[{"name":"APP1 771","children":[{"name":"APP1 773","children":[]},{"name":"v1","children":[{"name":"e1","children":[]}]},{"name":"v2","children":[]}]},{"name":"APP2 771","children":[]},{"name":"APP3 771","children":[]}]},{"name":"GEI772","children":[{"name":"APP1 772","children":[]},{"name":"APP2 772","children":[]},{"name":"APP3 772","children":[]}]},{"name":"GEI773","children":[{"name":"APP2 773","children":[]},{"name":"APP3 773","children":[]}]}]};
-  
-  function getData(){
-    return finalJson;
-  }
 
+ 
+  
+  
+
+  //pour test
   function getDatas(){
     return {"name":"UdeS","children":[{"name":"GEI771","children":[{"name":"APP1 771","children":[{"name":"APP1 773","children":[]},{"name":"v1","children":[{"name":"e1","children":[]}]},{"name":"v2","children":[]}]},{"name":"APP2 771","children":[]},{"name":"APP3 771","children":[]}]},{"name":"GEI772","children":[{"name":"APP1 772","children":[]},{"name":"APP2 772","children":[]},{"name":"APP3 772","children":[]}]},{"name":"GEI773","children":[{"name":"APP2 773","children":[]},{"name":"APP3 773","children":[]}]}]};
   }
@@ -175,7 +181,10 @@
 //Bouton pour rafrachir (maj)
 $("#btSave").click(function(){
 
-    var myUrl = "http://127.0.0.1:9999/getSunburst?parent=1"
+  var idparent = $("#inputParent").val();
+  //alert(idparent);
+  var myUrl = "http://127.0.0.1:9999/getSunburst?parent="+ idparent;
+  //alert(myUrl);
    //A garder
    $.ajax({
         url: myUrl,
@@ -184,6 +193,9 @@ $("#btSave").click(function(){
         type: 'GET',
         success: function(data,callback) {
             $("#callbackId").html(data);
+
+            finalJson=data;
+           
         },
         error: function(json) {
            // alert('erreur btRefresh');
