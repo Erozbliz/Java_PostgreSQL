@@ -1,10 +1,12 @@
 package test_postgres;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 
 public class Main {
+	
+	//Connexion 
+	static Connection c;
 
 	/**
 	 * Main
@@ -13,19 +15,20 @@ public class Main {
 	public static void main(String[] args) {
 		System.out.println("Main test Postgress");
 		//Connexion à PostgreSQL
-		Connection c = SqlRequest.Connexion("postgres", "root");
+		c = SqlRequest.Connexion("postgres", "root");
 		try {
-			//TEST
+			//TEST lance direct la requete sql
 			//SqlRequest.SelectNode(c);
 			//SqlRequest.SelectComposition(c);
-			SqlRequest.SelectAll(c, 1);
-			c.close();
+			//SqlRequest.SelectAll(c, 1); 
+			
 			
 			Thread serverHttp = new Thread(new ServerStartHTTP());
 			serverHttp.start();
 			
 			
-		} catch (SQLException e) {
+			//c.close();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

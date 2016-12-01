@@ -3,6 +3,8 @@ package test_postgres;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -41,8 +43,15 @@ public class Handler{
 			URI requestedUri = argHttpExhange.getRequestURI();
 			String query = requestedUri.getRawQuery();
 
-			String responseStr = "hello";
-
+			String responseStr = "JSON";
+			
+			//Lancement du script sql
+			responseStr = SqlRequest.SelectAll(Main.c, 1);
+			
+			//Map<String, String> params = queryToMap(query); 
+			//System.out.println("user=" + params.get("user"));
+			//System.out.println(argHttpExhange.getRequestURI().getQuery());
+			
 			argHttpExhange.getResponseHeaders().add("Access-Control-Allow-Origin", "*"); //CORS
 			argHttpExhange.sendResponseHeaders(200, responseStr.length());
 			OutputStream os = argHttpExhange.getResponseBody();
@@ -50,7 +59,27 @@ public class Handler{
 			os.close();
 		}
 	}
-
+	
+	
+	/**
+	 * Deserialisation URL pour avoir les parametres
+	 * 
+	 * Utilisation : Map<String, String> params = queryToMap(httpExchange.getRequestURI().getQuery()); 
+	 * @param query
+	 * @return
+	 */
+	public static Map<String, String> queryToMap(String query){
+	    Map<String, String> result = new HashMap<String, String>();
+	    for (String param : query.split("&")) {
+	        String pair[] = param.split("=");
+	        if (pair.length>1) {
+	            result.put(pair[0], pair[1]);
+	        }else{
+	            result.put(pair[0], "");
+	        }
+	    }
+	    return result;
+	}
 
 
 }

@@ -19,9 +19,7 @@ import java.util.Set;
  *
  */
 public class SqlRequest {
-	
-	
-	
+
 	static String finalJson = ""; // Json final
 
 	/**
@@ -99,7 +97,13 @@ public class SqlRequest {
 		System.out.println("SelectComposition done successfully");
 	}
 
-	public static void SelectAll(Connection c, int numRoot) {
+	/**
+	 * Génére le json 
+	 * @param c
+	 * @param numRoot = parent
+	 * @return json
+	 */
+	public static String SelectAll(Connection c, int numRoot) {
 
 		//param1 = enfant , parent2 = parent
 		Map<Integer, Integer> mapEnfantParent = new HashMap<Integer, Integer>();
@@ -159,9 +163,11 @@ public class SqlRequest {
 		}
 
 		System.out.println("\n---------------");
-		createJSON(0, mapEnfantParent, mapIdNodeName);
+		String myJson = createJSON(0, mapEnfantParent, mapIdNodeName);
 
 		//utilser http://www.jsoneditoronline.org/ 
+
+		return myJson;
 
 	}
 
@@ -169,7 +175,7 @@ public class SqlRequest {
 	 * Création du JSON
 	 * 
 	 */
-	public static void createJSON(int parent, Map<Integer, Integer> mapEnfantParent,
+	public static String createJSON(int parent, Map<Integer, Integer> mapEnfantParent,
 			Map<Integer, String> mapIdNodeName) {
 
 		Set<Integer> keys = mapIdNodeName.keySet(); //key = id_node, name
@@ -194,14 +200,15 @@ public class SqlRequest {
 		} catch (IOException e) {
 			System.out.println("Erreur crétion du JSON");
 		}
+
+		return replacedString;
 	}
-	
-	
-	
+
 	/**
 	 * Méthode récursive qui construit un json en fonction parent rentré
 	 */
-	public static void FinalRecursivee(int parent, Map<Integer, Integer> mapEnfantParent, Map<Integer, String> mapIdNodeName) {
+	public static void FinalRecursivee(int parent, Map<Integer, Integer> mapEnfantParent,
+			Map<Integer, String> mapIdNodeName) {
 		Set<Integer> keys = mapEnfantParent.keySet(); //key=enfant ,parent
 		Set<Integer> keysNode = mapIdNodeName.keySet(); //key = id_node, name
 
@@ -209,7 +216,7 @@ public class SqlRequest {
 			//si parent == parent choisie (qui peut etre un enfant)
 			if (mapEnfantParent.get(key) == parent) {
 				finalJson += "{\"name\":\"" + mapIdNodeName.get(key) + "\",\"children\":[";
-				FinalRecursivee(key, mapEnfantParent,mapIdNodeName);
+				FinalRecursivee(key, mapEnfantParent, mapIdNodeName);
 			} else {
 
 			}
