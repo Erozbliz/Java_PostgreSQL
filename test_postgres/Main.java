@@ -22,12 +22,11 @@ public class Main {
 			//SqlRequest.SelectComposition(c);
 			//SqlRequest.SelectAll(c, 1); 
 			
-			
+			//Lancement thread pour serveur HTTP REST
 			Thread serverHttp = new Thread(new ServerStartHTTP());
 			serverHttp.start();
 			
-			
-			//c.close();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

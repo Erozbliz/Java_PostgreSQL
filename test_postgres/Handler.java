@@ -81,9 +81,9 @@ public class Handler {
 	}
 
 	/**
-	 * 
-	 *  TOOL
-	 * 
+	 * ---------------------------------------------
+	 *  				TOOL
+	 * ---------------------------------------------
 	 */
 
 	/**
@@ -108,7 +108,8 @@ public class Handler {
 	}
 
 	/**
-	 * 
+	 * Pour test
+	 * Deserialisation URL pour avoir les parametres
 	 * @param query
 	 * @param parameters
 	 * @throws UnsupportedEncodingException
