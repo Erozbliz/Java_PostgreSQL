@@ -1,3 +1,14 @@
+/*
+ * Nom de classe : Handler
+ *
+ * Description   : 
+ *
+ * Version       : 3.0
+ *
+ * Date          : 04/12/2016
+ * 
+ * Copyright     : Olivier Colombies et Olivier Schultz
+ */
 package test_postgres;
 
 import java.io.IOException;
@@ -14,9 +25,13 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 /**
- * Pour le client Ajax
- * http://www.java2s.com/Code/Jar/h/Downloadhttp20070405jar.htm
+ * description de la classe.
+ * explication supplémentaire si nécessaire
+ * 
+ * @version 3.0
  *
+ * @see UneAutreClasse
+ * @author Colombies et Schultz
  */
 public class Handler {
 
@@ -66,7 +81,7 @@ public class Handler {
 
 			//Lancement du script sql
 			System.out.println("parentId " + parentId);
-			responseStr = SqlRequest.SelectAll(Main.c, parentId);
+			responseStr = SqlRequest.SelectAll(Main.connection, parentId);
 
 			//Map<String, String> params = queryToMap(query); 
 			//System.out.println("user=" + params.get("user"));

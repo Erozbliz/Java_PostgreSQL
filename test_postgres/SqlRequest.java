@@ -32,7 +32,7 @@ public class SqlRequest {
 		Connection c = null;
 		try {
 			Class.forName("org.postgresql.Driver");
-			c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/test", user, password);
+			c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/postgres", user, password);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());

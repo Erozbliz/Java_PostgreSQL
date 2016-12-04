@@ -1,8 +1,18 @@
+/*
+ * Nom de classe : HttpServeur
+ *
+ * Description   : 
+ *
+ * Version       : 3.0
+ *
+ * Date          : 04/12/2016
+ * 
+ * Copyright     : Olivier Colombies et Olivier Schultz
+ */
 package test_postgres;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-
 import com.sun.net.httpserver.HttpServer;
 
 /**
@@ -38,9 +48,6 @@ public class HttpServeur implements Runnable {
 		System.out.println("serveur http arreté");
 	}
 	
-	
-	
-
 	//Méthode sans thread (PAS UTILISER)
 	public void Start(int port) {
 		try {
@@ -55,4 +62,6 @@ public class HttpServeur implements Runnable {
 		}
 	}
 
+	
 }
+
