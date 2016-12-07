@@ -3,7 +3,7 @@
 - Client side : HTML/JS/CSS/BOOTSTRAP/JQuery/Ajax/D3.js/HTML5 storage
 - Server side : JAVA/PostgreSQL/HTTP REST (GET)/Recursive function/CORS(*)
 
-- GÃ©nÃ©ration d'un JSON depuis PostgreSQL en JAVA et affichage des donnÃ©es dans un sunburst D3.js
+- Génération d'un JSON depuis PostgreSQL en JAVA et affichage des données dans un sunburst D3.js
 
 ## Prérequis
 - Eclipse
@@ -27,7 +27,7 @@ etc
 C:\Program Files\PostgreSQL\9.6\bin>pg_dump.exe --file "F:/backup1.sql" --host "localhost" --port "5432" --username "postgres" --no-password --verbose --format=p --encoding "UTF8" "test"
 
 ## Informations complémentaires
-- Get : 127.0.0.1:9999/getSunburst?parent=0   (active la gÃ©nÃ©ration du JSON)
+- Get : 127.0.0.1:9999/getSunburst?parent=0   (active la génération du JSON)
 - IHM : indexDataSeparate.html (lancer un serveur)
 
 ![alt tag](https://raw.githubusercontent.com/Erozbliz/Java_PostgreSQL/master/capture/IHM.JPG)
