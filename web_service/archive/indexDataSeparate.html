@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" rel="stylesheet" media="screen,projection">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<style>
+	path {
+		stroke: #fff;
+		fill-rule: evenodd;
+	}
+
+	text {
+		font-family: Arial, sans-serif;
+		font-size: 12px;
+	}
+</style>
+
+<body>
+  
+
+  <div class="container-fluid">
+    <div class="row">
+
+        <div class="col-md-4">
+          <p class=""> 
+            D3 Ajout du css bootstrap + JQuery <br>
+            Nécessite de le lancer sur un serveur
+          </p>
+
+          <form class="form-inline">
+            <div class="form-group">
+              <label class="sr-only" for="inputParent">Parent Sunburst</label>
+              <input type="text" class="form-control" id="inputParent" placeholder="parent">
+            </div>
+            <button type="button" id="btSave" class="btn btn-default">Récupérer JSON</button>
+          </form>
+          <span> 
+            <div id="callbackId" class="alert alert-success" role="alert">...</div>
+          </span>
+
+          <div id="chart">
+          </div>
+          <div class="chart2">
+          </div>
+        </div>
+      </div>
+  </div>
+
+
+ <script src="http://d3js.org/d3.v3.min.js"></script>
+ <script>
+
+  var finalJson = {"name":"UdeS","children":[{"name":"GEI771","children":[{"name":"APP1 771","children":[{"name":"APP1 773","children":[]},{"name":"v1","children":[{"name":"e1","children":[]}]},{"name":"v2","children":[]}]},{"name":"APP2 771","children":[]},{"name":"APP3 771","children":[]}]},{"name":"GEI772","children":[{"name":"APP1 772","children":[]},{"name":"APP2 772","children":[]},{"name":"APP3 772","children":[]}]},{"name":"GEI773","children":[{"name":"APP2 773","children":[]},{"name":"APP3 773","children":[]}]}]};
+
+  var idparent = 0;
+   loadAjaxRefresh();
+  console.log(finalJson);
+
+function loaddd(){
+   var width = 960,
+      height = 700,
+      radius = Math.min(width, height) / 2;
+
+  var x = d3.scale.linear()
+      .range([0, 2 * Math.PI]);
+
+  var y = d3.scale.linear()
+      .range([0, radius]);
+
+  var color = d3.scale.category20c();
+
+  var svg = d3.select("#chart").append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .datum(finalJson)
+      .append("g")
+      .attr("transform", "translate(" + width / 2 + "," + (height / 2 + 10) + ")");
+
+  var partition = d3.layout.partition()
+      .value(function(d) {
+        return 1;
+      });
+
+  var arc = d3.svg.arc()
+      .startAngle(function(d) {
+        return Math.max(0, Math.min(2 * Math.PI, x(d.x)));
+      })
+      .endAngle(function(d) {
+        return Math.max(0, Math.min(2 * Math.PI, x(d.x + d.dx)));
+      })
+      .innerRadius(function(d) {
+        return Math.max(0, y(d.y));
+      })
+      .outerRadius(function(d) {
+        return Math.max(0, y(d.y + d.dy));
+      });
+
+
+  var g = svg.selectAll("g")
+      .data(partition.nodes)
+      .enter().append("g");
+
+  var path = g.append("path")
+      .attr("d", arc)
+      .style("fill", function(d) {
+        return color((d.children ? d : d.parent).name);
+      })
+      .on("click", click);
+
+  var text = g.append("text")
+      .attr("transform", function(d) {
+        return "rotate(" + computeTextRotation(d) + ")";
+      })
+      .attr("x", function(d) {
+        return y(d.y);
+      })
+      .attr("dx", "6") // margin
+      .attr("dy", ".35em") // vertical-align
+      .text(function(d) {
+        return d.name;
+      });
+
+  function click(d) {
+    // fade out all text elements
+    text.transition().attr("opacity", 0);
+
+    path.transition()
+        .duration(750)
+        .attrTween("d", arcTween(d))
+        .each("end", function(e, i) {
+          // check if the animated element's data e lies within the visible angle span given in d
+          if (e.x >= d.x && e.x < (d.x + d.dx)) {
+            // get a selection of the associated text element
+            var arcText = d3.select(this.parentNode).select("text");
+            // fade in the text element and recalculate positions
+            arcText.transition().duration(750)
+                .attr("opacity", 1)
+                .attr("transform", function() {
+                  return "rotate(" + computeTextRotation(e) + ")"
+                })
+                .attr("x", function(d) {
+                  return y(d.y);
+                });
+          }
+        });
+  }
+
+  d3.select(self.frameElement).style("height", height + "px");
+
+  // Interpolate the scales!
+  function arcTween(d) {
+    var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
+        yd = d3.interpolate(y.domain(), [d.y, 1]),
+        yr = d3.interpolate(y.range(), [d.y ? 20 : 0, radius]);
+    return function(d, i) {
+      return i ? function(t) {
+        return arc(d);
+      } : function(t) {
+        x.domain(xd(t));
+        y.domain(yd(t)).range(yr(t));
+        return arc(d);
+      };
+    };
+  }
+
+  function computeTextRotation(d) {
+    return (x(d.x + d.dx / 2) - Math.PI / 2) / Math.PI * 180;
+  }
+  
+
+ }
+  
+  
+
+  //pour test
+  function getDatas(){
+    return {"name":"UdeS","children":[{"name":"GEI771","children":[{"name":"APP1 771","children":[{"name":"APP1 773","children":[]},{"name":"v1","children":[{"name":"e1","children":[]}]},{"name":"v2","children":[]}]},{"name":"APP2 771","children":[]},{"name":"APP3 771","children":[]}]},{"name":"GEI772","children":[{"name":"APP1 772","children":[]},{"name":"APP2 772","children":[]},{"name":"APP3 772","children":[]}]},{"name":"GEI773","children":[{"name":"APP2 773","children":[]},{"name":"APP3 773","children":[]}]}]};
+  }
+
+
+//Script pour le formulaire
+//Bouton pour rafrachir (maj)
+$("#btSave").click(function(){
+
+  idparent = $("#inputParent").val();
+
+  var parentSave= localStorage.getItem('testParent');
+  var ancienParent = idparent;
+  if(parentSave!=null){
+    ancienParent = parentSave;
+  }
+  //alert(idparent);
+  var myUrl = "http://127.0.0.1:9999/getSunburst?parent="+ ancienParent;
+  //alert(myUrl);
+   //A garder
+   $.ajax({
+        url: myUrl,
+        dataType: "text",
+        //url: 'data_test/getListMatch.json',
+        type: 'GET',
+        success: function(data,callback) {
+            $("#callbackId").html(data);
+
+            finalJson=data;
+            localStorage.setItem('testParent', idparent);
+
+            alert(localStorage.getItem('testParent'));
+            //REFRESH ICI
+            console.log(JSON.parse(finalJson));
+            window.location.reload(); //<<<<<<<<<<<<<<<<<<RELOAD
+
+        
+        },
+        error: function(json) {
+           // alert('erreur btRefresh');
+            $("#callbackId").html(" erreur réseaux");
+        }
+    });
+});
+
+
+
+function loadAjaxRefresh(){
+
+
+  var parentSave= localStorage.getItem('testParent');
+  var ancienParent = 0;
+  if(parentSave!=null){
+    ancienParent = parentSave;
+  }
+  //alert(idparent);
+  var myUrl = "http://127.0.0.1:9999/getSunburst?parent="+ ancienParent;
+   $.ajax({
+        url: myUrl,
+        dataType: "text",
+        //url: 'data_test/getListMatch.json',
+        type: 'GET',
+        success: function(data,callback) {
+            $("#callbackId").html(data);
+
+            finalJson=JSON.parse(data);
+            //REFRESH ICI
+            console.log("chargement ok");
+            console.log(finalJson);
+            loaddd();
+
+        
+        },
+        error: function(json) {
+           // alert('erreur btRefresh');
+            $("#callbackId").html(" erreur réseaux");
+        }
+    });
+}
+
+
+
+</script>
+</body>
+</html>
